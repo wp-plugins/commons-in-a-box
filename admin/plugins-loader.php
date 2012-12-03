@@ -2,9 +2,10 @@
 /**
  * Set up plugin management
  *
+ * @since 0.1
+ *
  * @package Commons_In_A_Box
  * @subpackage Plugins
- * @since 0.1
  */
 
 // Exit if accessed directly
@@ -138,9 +139,9 @@ class CBox_Plugins {
 			'type'              => 'recommended',
 			'cbox_name'         => __( 'Docs', 'cbox' ),
 			'cbox_description'  => __( 'Allows your members to collaborate on wiki-style Docs.', 'cbox' ),
-			'version'           => '1.2.5',
+			'version'           => '1.2.6',
 			'depends'           => 'BuddyPress (>=1.5)',
-			'download_url'      => 'http://downloads.wordpress.org/plugin/buddypress-docs.1.2.5.zip',
+			'download_url'      => 'http://downloads.wordpress.org/plugin/buddypress-docs.1.2.6.zip',
 			'documentation_url' => 'http://commonsinabox.org/documentation/plugins/buddypress-docs',
 			'admin_settings'    => 'edit.php?post_type=bp_doc',
 			'network_settings'  => 'root-blog-only'
@@ -152,9 +153,9 @@ class CBox_Plugins {
 			'type'              => 'recommended',
 			'cbox_name'         => __( 'Wiki', 'cbox' ),
 			'cbox_description'  => __( 'A sitewide wiki, powered by BuddyPress Docs', 'cbox' ),
-			'version'           => '1.0',
+			'version'           => '1.0.2',
 			'depends'           => 'BuddyPress (>=1.5), BuddyPress Docs (>=1.2)',
-			'download_url'      => 'http://github.com/boonebgorges/buddypress-docs-wiki/archive/1.0.zip',
+			'download_url'      => 'http://github.com/boonebgorges/buddypress-docs-wiki/archive/1.0.2.zip',
 			'documentation_url' => 'http://commonsinabox.org/documentation/plugins/buddypress-docs-wiki',
 			'network_settings'  => 'root-blog-only'
 		) );
@@ -166,8 +167,8 @@ class CBox_Plugins {
 			'cbox_name'         => __( 'Group Email Subscription', 'cbox' ),
 			'cbox_description'  => __( 'Allows your community members to receive email notifications of activity within their groups.', 'cbox' ),
 			'depends'           => 'BuddyPress (>=1.5)',
-			'version'           => '3.2.1',
-			'download_url'      => 'http://downloads.wordpress.org/plugin/buddypress-group-email-subscription.3.2.1.zip',
+			'version'           => '3.2.3',
+			'download_url'      => 'http://downloads.wordpress.org/plugin/buddypress-group-email-subscription.3.2.3.zip',
 			'documentation_url' => 'http://commonsinabox.org/documentation/plugins/buddypress-group-email-subscription',
 			'admin_settings'    => 'admin.php?page=ass_admin_options', // this doesn't work for BP_ENABLE_MULTIBLOG
 			'network_settings'  => 'admin.php?page=ass_admin_options'
@@ -206,8 +207,8 @@ class CBox_Plugins {
 			'type'              => 'recommended',
 			'cbox_name'         => __( 'bbPress Forums', 'cbox' ),
 			'cbox_description'  => __( 'Sitewide and group-specific discussion forums.', 'cbox' ),
-			'version'           => '2.2',
-			'download_url'      => 'http://downloads.wordpress.org/plugin/bbpress.2.2.zip',
+			'version'           => '2.2.2',
+			'download_url'      => 'http://downloads.wordpress.org/plugin/bbpress.2.2.2.zip',
 			'documentation_url' => 'http://commonsinabox.org/documentation/plugins/bbpress',
 			'admin_settings'    => 'options-general.php?page=bbpress',
 			'network_settings'  => 'root-blog-only'
@@ -219,9 +220,21 @@ class CBox_Plugins {
 			'type'              => 'recommended',
 			'cbox_name'         => __( 'Featured Content Widget', 'cbox' ),
 			'cbox_description'  => __( 'Provides a widget that allows you to select among five different content types to feature in a widget area.', 'cbox' ),
-			'version'           => '1.0.1',
-			'download_url'      => 'http://downloads.wordpress.org/plugin/cac-featured-content.1.0.1.zip',
+			'version'           => '1.0.3',
+			'download_url'      => 'http://downloads.wordpress.org/plugin/cac-featured-content.1.0.3.zip',
 			'documentation_url' => 'http://commonsinabox.org/documentation/plugins/cac-featured-content',
+		) );
+
+		// BuddyPress Group Email Subscription
+		self::register_plugin( array(
+			'plugin_name'       => 'BP Group Announcements',
+			'type'              => 'recommended',
+			'cbox_name'         => __( 'Group Announcements', 'cbox' ),
+			'cbox_description'  => __( 'Repurposes group activity updates, using an Announcements tab to groups.', 'cbox' ),
+			'depends'           => 'BuddyPress (>=1.5)',
+			'version'           => '1.0.1',
+			'download_url'      => 'http://github.com/cuny-academic-commons/bp-group-announcements/archive/1.0.1.zip',
+			'documentation_url' => 'http://commonsinabox.org/documentation/plugins/bp-group-announcements',
 		) );
 
 		// only show the following plugins in network mode
@@ -234,7 +247,7 @@ class CBox_Plugins {
 				'cbox_description'  => __( 'Adds more blog privacy options for your users.', 'cbox' ),
 				'version'           => '3.2.1.5',
 				'download_url'      => 'http://downloads.wordpress.org/plugin/more-privacy-options.zip',
-				//'documentation_url' => 'http://commonsinabox.org/documentation/plugins/more-privacy-options',
+				'documentation_url' => 'http://commonsinabox.org/documentation/plugins/more-privacy-options',
 				'network_settings'  => 'settings.php#menu'
 			) );
 
@@ -246,7 +259,7 @@ class CBox_Plugins {
 				'cbox_description'  => __( 'Works with More Privacy Options to keep private blog content out of public activity feeds.', 'cbox' ),
 				'version'           => '1.2',
 				'download_url'      => 'http://downloads.wordpress.org/plugin/bp-mpo-activity-filter.1.2.zip',
-				//'documentation_url' => 'http://commonsinabox.org/documentation/plugins/bp-mpo-activity-filter',
+				'documentation_url' => 'http://commonsinabox.org/documentation/plugins/bp-mpo-activity-filter',
 			) );
 
 			// BuddyPress GroupBlog
@@ -289,8 +302,8 @@ class CBox_Plugins {
 			'cbox_name'         => __( 'External RSS Feeds for Groups', 'cbox' ),
 			'cbox_description'  => __( 'Gives group creators and administrators the ability to attach external RSS feeds to groups.', 'cbox' ),
 			'depends'           => 'BuddyPress (>=1.2)',
-			'version'           => '1.2.1',
-			'download_url'      => 'http://downloads.wordpress.org/plugin/external-group-blogs.1.2.1.zip',
+			'version'           => '1.5',
+			'download_url'      => 'http://github.com/modemlooper/external-group-blogs/archive/master.zip',
 			'documentation_url' => 'http://commonsinabox.org/documentation/plugins/buddypress-external-group-rss',
 		) );
 
@@ -307,21 +320,19 @@ class CBox_Plugins {
 		) );
 
 		// BuddyPress Reply By Email
-		// @todo Add this back when RBE is added in the WP.org plugins repo
-		/*
+		// @todo Still need to add it in the wp.org plugin repo! Using Github for now.
 		self::register_plugin( array(
 			'plugin_name'       => 'BuddyPress Reply By Email',
 			'type'              => 'optional',
 			'cbox_name'         => __( 'Reply By Email', 'cbox' ),
 			'cbox_description'  => __( "Reply to content from all over the community from the comfort of your email inbox", 'cbox' ),
-			'version'           => '1.0',
+			'version'           => '1.0-RC1',
 			'depends'           => 'BuddyPress (>=1.5)',
-			'download_url'      => '',
+			'download_url'      => 'https://github.com/r-a-y/bp-reply-by-email/archive/master.zip',
 			'documentation_url' => 'http://commonsinabox.org/documentation/plugins/buddypress-reply-by-email',
 			'admin_settings'    => is_multisite() ? 'options-general.php?page=bp-rbe' : 'admin.php?page=bp-rbe',
-			'network_settings'  => 'root-blog-only
+			'network_settings'  => 'root-blog-only'
 		) );
-		*/
 
 		// WP Better Emails
 		/*
@@ -547,7 +558,7 @@ class CBox_Plugins {
 					$loader = Plugin_Dependencies::get_pluginloader_by_name( $plugin );
 
 					// if the plugin is active, add it to our plugin array
-					if ( ! empty( $active_plugins[$loader] ) )
+					if ( isset( $active_plugins[$loader] ) )
 						$plugins[] = $plugin;
 				}
 
@@ -654,11 +665,11 @@ class CBox_Plugins {
 				array( $this, 'admin_page' )
 			);
 
-			// validate any settings changes submitted from the CBOX plugins page
-			add_action( "load-{$plugin_page}",       array( $this, 'validate_cbox_dashboard' ) );
-
 			// load Plugin Dependencies plugin on the CBOX plugins page
 			add_action( "load-{$plugin_page}",       array( 'Plugin_Dependencies', 'init' ) );
+
+			// validate any settings changes submitted from the CBOX plugins page
+			add_action( "load-{$plugin_page}",       array( $this, 'validate_cbox_dashboard' ) );
 
 			// inline CSS
 			add_action( "admin_head-{$plugin_page}", array( 'CBox_Admin', 'dashboard_css' ) );
@@ -696,11 +707,14 @@ class CBox_Plugins {
 			switch( $_REQUEST['cbox-action'] ) {
 				case 'deactivate' :
 					check_admin_referer('deactivate-plugin_' . $plugin);
-					if ( self::is_plugin_active( $plugin ) ) {
+
+					// if plugin is already deactivated, redirect to CBOX dashboard and stop!
+					if ( ! self::is_plugin_active( $plugin ) ) {
 						wp_redirect( self_admin_url("admin.php?page=cbox") );
 						exit;
-					}
-					else {
+
+					// start deactivating!
+					} else {
 						$set_transient = is_network_admin() ? 'set_site_transient' : 'set_transient';
 
 						$deactivated = call_user_func( array( 'Plugin_Dependencies', "deactivate_cascade" ), (array) $plugin );

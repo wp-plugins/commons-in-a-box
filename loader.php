@@ -3,7 +3,7 @@
 Plugin Name: Commons In A Box
 Plugin URI: http://github.com/cuny-academic-commons/
 Description: A suite of community and collaboration tools for WordPress, designed especially for academic communities
-Version: 1.0-beta1
+Version: 1.0-beta2
 Author: CUNY Academic Commons
 Author URI: http://commons.gc.cuny.edu
 Licence: GPLv3
@@ -29,6 +29,7 @@ class Commons_In_A_Box {
 			self::$instance->constants();
 			self::$instance->setup_globals();
 			self::$instance->includes();
+			self::$instance->load_components();
 		}
 
 		return self::$instance;
@@ -69,7 +70,7 @@ class Commons_In_A_Box {
 		/** VERSION ***********************************************************/
 
 		// CBOX version
-		$this->version       = '1.0-beta1';
+		$this->version       = '1.0-beta2';
 
 		// UTC date of CBOX version release
 		$this->revision_date = '2012-11-19 18:00 UTC';
@@ -81,24 +82,51 @@ class Commons_In_A_Box {
 
 		// the URL to the CBOX directory
 		$this->plugin_url    = plugin_dir_url( __FILE__ );
+
+		/** SETTINGS **********************************************************/
+
+		// the settings options key used on the "CBOX Settings" page
+		$this->settings_key  = '_cbox_admin_settings';
 	}
 
 	/**
 	 * Includes necessary files
 	 *
 	 * @since 0.1
-	 *
-	 * @todo Make this nice somehow
 	 */
 	private function includes() {
-		if ( is_admin() ) {
-			require( $this->plugin_dir . 'admin/admin-loader.php' );
+		// pertinent functions used everywhere
+		require( $this->plugin_dir . 'includes/functions.php' );
 
+		// admin area
+		if ( cbox_is_admin() ) {
+			require( $this->plugin_dir . 'admin/admin-loader.php' );
 			require( $this->plugin_dir . 'admin/plugins-loader.php' );
-			$this->plugins = new CBox_Plugins;
+			require( $this->plugin_dir . 'admin/settings-loader.php' );
+
+		// frontend
+		} else {
+			require( $this->plugin_dir . 'includes/frontend.php' );
 		}
 	}
 
+	/**
+	 * Load up our components.
+	 *
+	 * @since 1.0-beta2
+	 */
+	private function load_components() {
+		// admin area
+		if ( cbox_is_admin() ) {
+			$this->admin    = new CBox_Admin;
+			$this->plugins  = new CBox_Plugins;
+			$this->settings = new CBox_Settings;
+
+		// frontend
+		} else {
+			$this->frontend = new CBox_Frontend;
+		}
+	}
 
 	/** HELPERS *******************************************************/
 
@@ -110,7 +138,6 @@ class Commons_In_A_Box {
 	}
 
 }
-add_action( 'plugins_loaded', array( 'Commons_In_A_Box', 'init' ), 1 );
 
 /**
  * The main function responsible for returning the Commons In A Box instance
@@ -126,3 +153,6 @@ add_action( 'plugins_loaded', array( 'Commons_In_A_Box', 'init' ), 1 );
 function cbox() {
 	return Commons_In_A_Box::init();
 }
+
+// Vroom!
+cbox();

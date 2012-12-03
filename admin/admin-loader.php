@@ -2,9 +2,10 @@
 /**
  * Set up the admin area
  *
+ * @since 0.2
+ *
  * @package Commons_In_A_Box
  * @subpackage Adminstration
- * @since 0.2
  */
 
 // Exit if accessed directly
@@ -114,7 +115,7 @@ class CBox_Admin {
 			// set reference pointer for later use
 			cbox()->setup = 'upgrade';
 
-			if ( $_REQUEST['cbox-themes'] )
+			if ( ! empty( $_REQUEST['cbox-themes'] ) )
 				cbox()->theme_upgrades = $_REQUEST['cbox-themes'];
 
 			// bump the revision date in the DB after updating
@@ -1235,6 +1236,3 @@ class CBox_Admin {
 	}
 
 }
-
-// initialize admin area
-new CBox_Admin;
