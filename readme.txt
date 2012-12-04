@@ -3,7 +3,7 @@ Contributors: cuny-academic-commons, boonebgorges, r-a-y
 Tags: commons, cuny, community, education, academic, buddypress
 Requires at least: 3.4
 Tested up to: 3.5
-Stable tag: 1.0-beta2
+Stable tag: 1.0-beta3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -38,6 +38,9 @@ Yes! CBOX will take over the management of BuddyPress and some of your other Bud
 2. The Commons In A Box default theme
 
 == Changelog ==
+
+= 1.0-beta3 =
+* Fixes bug when running PHP < 5.3
 
 = 1.0-beta2 =
 * Feature: New settings page
