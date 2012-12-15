@@ -72,10 +72,10 @@ class Commons_In_A_Box {
 		/** VERSION ***********************************************************/
 
 		// CBOX version
-		$this->version       = '1.0-beta3';
+		$this->version       = '1.0-beta4';
 
 		// UTC date of CBOX version release
-		$this->revision_date = '2012-12-04 03:00 UTC';
+		$this->revision_date = '2012-12-15 12:00 UTC';
 
 		/** FILESYSTEM ********************************************************/
 
