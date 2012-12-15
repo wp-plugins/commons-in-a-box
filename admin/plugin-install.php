@@ -41,7 +41,9 @@ class CBox_Plugin_Upgrader extends Plugin_Upgrader {
 		$this->bulk = true;
 		$this->upgrade_strings();
 
-		$current = CBox_Plugins::get_plugins();
+		// download URLs for each plugin should be registered in either the following:
+		$dependency = CBox_Plugins::get_plugins( 'dependency' );
+		$current    = CBox_Plugins::get_plugins();
 
 		add_filter( 'upgrader_source_selection',  'cbox_rename_github_folder',         1,  3 );
 		add_filter( 'upgrader_clear_destination', array( $this, 'delete_old_plugin' ), 10, 4 );
@@ -75,14 +77,23 @@ class CBox_Plugin_Upgrader extends Plugin_Upgrader {
 		foreach ( $plugins as $plugin ) {
 			$this->update_current++;
 			$this->skin->plugin_info['Title'] = $plugin;
-			$this->skin->options['url']       = $current[$plugin]['download_url'];
+
+			// set the download URL
+			if ( ! empty( $dependency[$plugin]['download_url'] ) )
+				$download_url = $dependency[$plugin]['download_url'];
+			elseif ( ! empty( $current[$plugin]['download_url'] ) )
+				$download_url = $current[$plugin]['download_url'];
+			else
+				$download_url = false;
+
+			$this->skin->options['url'] = $download_url;
 
 			// see if plugin is active
 			$plugin_loader = Plugin_Dependencies::get_pluginloader_by_name( $plugin );
 			$this->skin->plugin_active = is_plugin_active( $plugin_loader );
 
 			$result = $this->run( array(
-				'package'           => $current[$plugin]['download_url'],
+				'package'           => $download_url,
 				'destination'       => WP_PLUGIN_DIR,
 				'clear_destination' => true,
 				'clear_working'     => true,
@@ -520,8 +531,8 @@ class CBox_Updater {
 			}
 		}
 
-		// setup our plugin defaults - not used at the moment
-		//CBox_Plugin_Defaults::init();
+		// setup our plugin defaults
+		CBox_Plugin_Defaults::init();
 
 		// this tells WP_Upgrader to activate the plugin after any upgrade or successful install
 		add_filter( 'upgrader_post_install', array( &$this, 'activate_post_install' ), 10, 3 );
@@ -654,7 +665,7 @@ class CBox_Plugin_Defaults {
 	 * Setup our hooks.
 	 */
 	public function setup_hooks() {
-		add_action( 'activated_plugin', array( $this, 'plugin_defaults' ), 10, 2 );
+		add_action( 'activated_plugin', array( $this, 'plugin_defaults' ), 999, 2 );
 	}
 
 	/**
@@ -678,6 +689,60 @@ class CBox_Plugin_Defaults {
 			case 'buddypress/bp-loader.php' :
 
 				break;
+
+			// bbPress
+			case 'bbpress/bbpress.php' :
+				// don't let bbPress redirect to its about page after activating
+				delete_transient( '_bbp_activation_redirect' );
+
+				// if BP bundled forums exists, stop now!
+				$bp_root_blog = defined( 'BP_ROOT_BLOG' ) ? constant( 'BP_ROOT_BLOG' ) : 1;
+
+				if ( false !== get_blog_option( $bp_root_blog, 'bb-config-location' ) )
+					return;
+
+				/** See if a bbPress forum named 'Group Forums' exists *********/
+
+				// add a filter to WP_Query so we can search by post title
+				add_filter( 'posts_where', array( $this, 'search_by_post_title' ), 10, 2 );
+
+				// do our search
+				$search = new WP_Query( array(
+					'post_type'       => bbp_get_forum_post_type(),
+					'cbox_post_title' => __( 'Group Forums', 'bbpress' )
+				) );
+
+				/** No match, create our forum! ********************************/
+
+				if ( ! $search->have_posts() ) {
+					// create a forum for BP groups
+					$forum_id = bbp_insert_forum( array(
+						'post_title'   => __( 'Group Forums', 'bbpress' ),
+						'post_content' => __( 'All forums created in groups can be found here.', 'cbox' )
+					) );
+
+					// update the bbP marker for group forums
+					update_option( '_bbp_group_forums_root_id', $forum_id );
+				}
+
+				break;
 		}
+	}
+
+	/** HELPERS *******************************************************/
+
+	/**
+	 * Filter WP_Query to allow searching by post title.
+	 *
+	 * @since 1.0-beta4
+	 */
+	public function search_by_post_title( $where, $wp_query ) {
+		global $wpdb;
+
+		if ( $post_title = $wp_query->get( 'cbox_post_title' ) ) {
+			$where .= " AND {$wpdb->posts}.post_title = '" . esc_sql( $post_title ) . "'";
+		}
+
+		return $where;
 	}
 }

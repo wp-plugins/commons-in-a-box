@@ -34,7 +34,6 @@ class CBox_Admin {
 	 */
 	private function includes() {
 		require( CBOX_PLUGIN_DIR . 'admin/functions.php' );
-		require( CBOX_PLUGIN_DIR . 'admin/theme-install.php' );
 	}
 
 	/**
@@ -179,7 +178,7 @@ class CBox_Admin {
 
 				// some HTML markup!
 				echo '<div class="wrap">';
-				screen_icon('plugins');
+				screen_icon( 'cbox' );
 				echo '<h2>' . esc_html__('Set Up CBOX Plugins', 'cbox' ) . '</h2>';
 
 				// start the upgrade!
@@ -202,7 +201,7 @@ class CBox_Admin {
 
 				// some HTML markup!
 				echo '<div class="wrap">';
-				screen_icon('plugins');
+				screen_icon( 'cbox' );
 				echo '<h2>' . esc_html__('Install CBOX Plugins', 'cbox' ) . '</h2>';
 
 				// start the install!
@@ -242,7 +241,7 @@ class CBox_Admin {
 
 				// some HTML markup!
 				echo '<div class="wrap">';
-				screen_icon('plugins');
+				screen_icon( 'cbox' );
 				echo '<h2>' . $title . '</h2>';
 
 				// start the upgrade!
@@ -257,6 +256,10 @@ class CBox_Admin {
 
 			// install the cbox theme
 			case 'install-theme' :
+				// include the CBOX Theme Installer
+				if ( ! class_exists( 'CBox_Theme_Installer' ) )
+					require( CBOX_PLUGIN_DIR . 'admin/theme-install.php' );
+
 				// get CBOX theme specs
 				$theme = CBox_Theme_Specs::init()->get( 'cbox_theme' );
 
@@ -269,13 +272,17 @@ class CBox_Admin {
 
 			// upgrade CBOX themes
 			case 'upgrade-theme' :
+				// include the CBOX Theme Installer
+				if ( ! class_exists( 'CBox_Theme_Installer' ) )
+					require( CBOX_PLUGIN_DIR . 'admin/theme-install.php' );
+
 				// Modifies the theme action links that get displayed after theme installation
 				// is complete.
 				add_filter( 'update_bulk_theme_complete_actions', array( 'CBox_Theme_Installer', 'remove_theme_actions' ) );
 
 				// some HTML markup!
 				echo '<div class="wrap">';
-				screen_icon('themes');
+				screen_icon( 'cbox' );
 				echo '<h2>' . esc_html__('Upgrading CBOX Theme', 'cbox' ) . '</h2>';
 
 				// get cbox theme specs
@@ -359,6 +366,9 @@ class CBox_Admin {
 			// remove the cookie
 			@setcookie( 'cbox-bp-finish-wizard', '', time() - 3600, COOKIEPATH );
 
+			// do some stuff after CBOX is installed
+			cbox_bp_after_version_bump();
+
 			// redirect to the CBOX dashboard
 			wp_redirect( self_admin_url( 'admin.php?page=cbox' ) );
 		}
@@ -420,6 +430,9 @@ class CBox_Admin {
 
 		// contextual help
 		add_action( "load-{$subpage}",                array( $this, 'contextual_help' ) );
+
+		// dashboard forums notice
+		add_action( "load-{$subpage}",                array( $this, 'dashboard_forums_notice' ) );
 	}
 
 	/**
@@ -442,7 +455,7 @@ class CBox_Admin {
 		} else {
 		?>
 			<div class="wrap">
-				<?php screen_icon( 'index' ); ?>
+				<?php screen_icon( 'cbox' ); ?>
 				<h2><?php _e( 'Commons In A Box Dashboard', 'cbox' ); ?></h2>
 
 				<?php $this->welcome_panel(); ?>
@@ -513,6 +526,8 @@ class CBox_Admin {
 			update_user_meta( get_current_user_id(), 'show_cbox_welcome_panel', $welcome_checked );
 		}
 
+		global $wp_version;
+
 		// default class for our welcome panel container
 		$classes = 'welcome-panel';
 
@@ -535,7 +550,9 @@ class CBox_Admin {
 				<a class="welcome-panel-close" href="<?php echo esc_url( network_admin_url( 'admin.php?page=cbox&welcome=0' ) ); ?>"><?php _e( 'Dismiss', 'cbox' ); ?></a>
 			<?php endif; ?>
 
-			<div class="wp-badge"><?php printf( __( 'Version %s', 'cbox' ), cbox_get_version() ); ?></div>
+			<?php if ( version_compare( $wp_version, '3.4.3' ) < 0 ) : ?>
+				<div class="wp-badge"><?php printf( __( 'Version %s', 'cbox' ), cbox_get_version() ); ?></div>
+			<?php endif; ?>
 
 			<div class="welcome-panel-content">
 				<h3><?php _e( 'Welcome to Commons In A Box! ', 'cbox' ); ?></h3>
@@ -671,6 +688,39 @@ class CBox_Admin {
 	 * @uses cbox_bump_revision_date() To bump the CBOX revision date in the DB.
 	 */
 	private function upgrades() {
+		/** check if WordPress needs upgrading **********************************/
+
+		// get plugin dependency requirements
+		$requirements = Plugin_Dependencies::get_requirements();
+
+		// check CBOX plugin header's 'Core' header for version requirements
+		// if exists, WordPress needs to be upgraded
+		if ( ! empty( $requirements['Commons In A Box']['core'] ) ) {
+			$version = $requirements['Commons In A Box']['core'];
+		?>
+
+			<div id="cbox-upgrades" class="secondary-panel">
+				<h2><?php _e( 'Upgrade Available', 'cbox' ); ?></h2>
+
+				<div class="login">
+					<div class="message">
+						<p><?php printf( __( 'Commons In A Box %s requires WordPress %s', 'cbox' ), cbox_get_version(), $version ); ?>
+						<br />
+						<a class="button-secondary" href="<?php echo network_admin_url( 'update-core.php' ); ?>"><?php _e( 'Upgrade now!', 'cbox' ); ?></a></p>
+					</div>
+				</div>
+			</div>
+
+		<?php
+			return;
+		}
+
+		/** check if CBOX modules have updates **********************************/
+
+		// include the CBOX Theme Installer
+		if ( ! class_exists( 'CBox_Theme_Installer' ) )
+			require( CBOX_PLUGIN_DIR . 'admin/theme-install.php' );
+
 		// get activated CBOX plugins that need updating
 		$active_cbox_plugins_need_update = CBox_Plugins::get_upgrades( 'active' );
 
@@ -720,7 +770,7 @@ class CBox_Admin {
 		}
 
 	?>
-		<div class="welcome-panel secondary-panel">
+		<div id="cbox-upgrades" class="secondary-panel">
 			<h2><?php printf( _n( 'Upgrade Available', 'Upgrades Available', $total_count, 'cbox' ), $total_count ); ?></h2>
 
 			<div class="login">
@@ -751,7 +801,7 @@ class CBox_Admin {
 		$cbox_plugins = CBox_Plugins::get_plugins();
 	?>
 
-		<div class="welcome-panel secondary-panel">
+		<div id="cbox-links" class="secondary-panel">
 			<h2><?php _e( 'Quick Links', 'cbox' ); ?></h2>
 
 			<div class="welcome-panel-column-container">
@@ -885,7 +935,7 @@ class CBox_Admin {
 		if ( ! cbox_is_setup() )
 			return;
 	?>
-		<div class="welcome-panel secondary-panel">
+		<div id="cbox-about" class="secondary-panel">
 			<h2><?php _e( 'About', 'cbox' ); ?></h2>
 
 			<p><?php printf( __( "You're currently using <strong>Commons In A Box %s</strong>", 'cbox' ), cbox_get_version() ); ?>.</p>
@@ -1064,6 +1114,50 @@ class CBox_Admin {
 	<?php
 	}
 
+	/**
+	 * Show a notice about BuddyPress' forums.
+	 *
+	 * The bundled forums component in BuddyPress combined with bbPress 2 leads to
+	 * conflicts between the two plugins.
+	 *
+	 * We show a notice if both BuddyPress' bundled forums and bbPress are enabled
+	 * so site admins are aware of the potential conflict with instructions of
+	 * what they can do to address the issue.
+	 *
+	 * This only shows up when CBOX is fully setup.
+	 *
+	 * @since 1.0-beta4
+	 *
+	 * @uses cbox_is_setup() To tell if CBOX is fully setup.
+	 * @uses is_network_admin() Check to see if we're in the network admin area.
+	 */
+	public function dashboard_forums_notice() {
+		// if CBOX isn't setup yet, stop now!
+		if ( ! cbox_is_setup() )
+			return;
+
+		// make sure BuddyPress is active
+		if ( ! defined( 'BP_VERSION' ) )
+			return;
+
+		// if bundled forums are not active stop now!
+		if ( ! class_exists( 'BP_Forums_Component' ) )
+			return;
+
+		// if bbPress isn't active, stop now!
+		if ( ! function_exists( 'bbpress' ) )
+			return;
+
+		// add an admin notice
+		$prefix = is_network_admin() ? 'network_' : '';
+		add_action( $prefix . 'admin_notices', create_function( '', "
+			echo '<div class=\'error\'>';
+			echo '<p>' . __( 'We see you\'re running BuddyPress\' bundled forums. Commons In A Box comes with bbPress 2.2, an upgraded and improved forum tool.', 'cbox' ) . '</p>';
+			echo '<p>' . sprintf( __( 'However, we don\'t recommend running BP\'s bundled forums alongside bbPress 2.2. <a href=\'%s\'>Click here</a> to learn more about your options.', 'cbox' ), 'http://commonsinabox.org/documentation/buddypress-vs-bbpress-forums' ) . '</p>';
+			echo '</div>';
+		" ) );
+	}
+
 
 	/**
 	 * Add a special header before the admin plugins table is rendered
@@ -1134,17 +1228,15 @@ class CBox_Admin {
 	?>
 
 		<style type="text/css">
-		#toplevel_page_cbox .wp-menu-image,
-		#toplevel_page_cbox:hover .wp-menu-image,
-		#toplevel_page_cbox.wp-has-current-submenu .wp-menu-image {
+		#adminmenu #toplevel_page_cbox .wp-menu-image {
 			background: url('<?php echo $menu_icon_url; ?>');
 			background-repeat: no-repeat;
 		}
 
-		#toplevel_page_cbox .wp-menu-image {background-position:0 -33px;}
+		#adminmenu #toplevel_page_cbox .wp-menu-image {background-position:0 -33px;}
 
-		#toplevel_page_cbox:hover .wp-menu-image,
-		#toplevel_page_cbox.wp-has-current-submenu .wp-menu-image {background-position:0 -2px;}
+		#adminmenu #toplevel_page_cbox:hover .wp-menu-image,
+		#adminmenu #toplevel_page_cbox.wp-has-current-submenu .wp-menu-image {background-position:0 -2px;}
 
 		#toplevel_page_cbox .wp-menu-image img {display:none;}
 
@@ -1172,39 +1264,79 @@ class CBox_Admin {
 	public function dashboard_css() {
 		$badge_url        = cbox()->plugin_url( 'admin/images/logo-cbox_vert.png?ver='    . cbox()->version );
 		$badge_url_2x     = cbox()->plugin_url( 'admin/images/logo-cbox_vert-2x.png?ver=' . cbox()->version );
+		$icon32_url       = cbox()->plugin_url( 'admin/images/icon32.png?ver='            . cbox()->version );
 	?>
 
 		<style type="text/css">
+		#icon-cbox {
+			background: url( '<?php echo $icon32_url; ?>' ) no-repeat;
+		}
+
 		#welcome-panel {overflow:visible;}
 
 		.about-text {margin-right:220px;}
-		.welcome-panel-content .about-description, .welcome-panel h3 {margin-left:0; margin-right:180px;}
-		.welcome-panel .welcome-panel-column {width:47%;}
+		.welcome-panel-content .about-description, .welcome-panel h3 {margin-left:0; margin-right:180px; margin-bottom:.5em;}
+		.welcome-panel-dismiss {margin-bottom:0;}
 
 		#wpbody .login .message {margin:15px 0; text-align:center;}
 		.login .message a.button-secondary {display:inline-block; margin:10px 0 0;}
 
-		.secondary-panel {border-top:0; margin-top:0; padding:0 10px 20px;}
+		.secondary-panel {
+			padding:20px 10px 0px;
+			line-height:1.6em;
+			margin:0 8px 20px 8px;
+		}
+
+		#cbox-upgrades, #cbox-links {padding-bottom:2.4em;}
+
+		#cbox-upgrades, #cbox-links {border-bottom: 1px solid #dfdfdf;}
+
+		#cbox-about p, .cbox-plugins-section p {color:#777;}
+
 		.secondary-panel h2 {line-height:1;}
 
-		.submitted-on {font-size:1.3em; line-height:1.4;}
+		.secondary-panel h4 {font-size:14px;}
+			.secondary-panel h4 .icon16 {margin-left: -32px;}
 
-		.column-cbox-plugin-name {width:220px;}
+		.secondary-panel .welcome-panel-column-container {
+		    clear: both;
+		    overflow: hidden;
+		    padding-left: 26px;
+		    position: relative;
+		}
 
-		span.enabled       {color:#008800;}
-		span.disabled      {color:#880000;}
-		span.not-installed {color:#9f9f9f;}
+		.secondary-panel .welcome-panel-column {
+		    float: left;
+		    margin: 0 5% 0 -25px;
+		    min-width: 200px;
+		    padding-left: 25px;
+		    width: 47%;
+		}
+			.secondary-panel .welcome-panel-last {margin-right:0;}
+
+
+		.secondary-panel .welcome-panel-column ul {
+			margin: 1.6em 1em 1em 1.3em;
+		}
+
+		.secondary-panel .welcome-panel-column li {
+			list-style-type: disc;
+			padding-left: 2px;
+		}
 
 		.update-message {margin:5px 0;}
 
-		.dep-list li {list-style:disc; margin-left:1.5em;}
+		.submitted-on {font-size:1.3em; line-height:1.4;}
+
+		#wpbody .wp-badge {background-size:auto;}
 
 		.wp-badge {
 		        position:absolute; top:30px; right:0;
 		        width:190px; height:30px;
-			padding-top:200px;
-		        background-color:#fff; background-position:22px 10px;
+		        background-color:#fff;
 		        background-image: url( <?php echo $badge_url; ?> );
+			background-position:22px 10px;
+			padding-top:200px;
 		        color:#999; text-shadow:none;
 		}
 
@@ -1220,6 +1352,7 @@ class CBox_Admin {
 				}
 		}
 
+		/* modal */
 		#lean_overlay {
 			position: fixed;
 			z-index:100;
@@ -1230,6 +1363,18 @@ class CBox_Admin {
 			background: #000;
 			display: none;
 		}
+
+		/* plugins table */
+		.cbox-plugins-section {margin-top:0; padding:20px 20px; line-height:1.6em; border-bottom:1px solid #dfdfdf;}
+
+		tr.cbox-plugin-row-active th, tr.cbox-plugin-row-active td {background-color:#fff;}
+		tr.cbox-plugin-row-action-required th, tr.cbox-plugin-row-action-required td {background-color:#F4F4F4;}
+
+		.column-cbox-plugin-name {width:220px;}
+
+		span.enabled       {color:#008800;}
+		span.disabled      {color:#880000;}
+		span.not-installed {color:#9f9f9f;}
 		</style>
 
 	<?php

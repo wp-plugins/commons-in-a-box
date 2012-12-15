@@ -10,7 +10,8 @@
 if ( !defined( 'ABSPATH' ) ) exit;
 
 // require the WP_Upgrader class so we can extend it!
-require_once( ABSPATH . 'wp-admin/includes/class-wp-upgrader.php' );
+if ( ! class_exists( 'Plugin_Upgrader' ) )
+	require_once( ABSPATH . 'wp-admin/includes/class-wp-upgrader.php' );
 
 /**
  * Sets up our CBOX theme requirements.
@@ -40,17 +41,15 @@ class CBox_Theme_Specs {
 	 */
 	private static $cbox_theme = array(
 		'name'           => 'Commons In A Box Theme',
-		'version'        => '1.0-beta2',
+		'version'        => '1.0-beta4',
 		'directory_name' => 'cbox-theme',
-
-		// Note the url 1.0beta2 - this is a workaround for a limitation in the way the theme folder is named
-		'download_url'   => 'http://github.com/cuny-academic-commons/cbox-theme/archive/1.0-beta2.zip'
+		'download_url'   => 'http://github.com/cuny-academic-commons/cbox-theme/archive/1.0-beta4.zip'
 	);
 
 	/**
 	 * Static bootstrapping init method.
 	 */
-	public static function &init() {
+	public static function init() {
 		return new self();
 	}
 

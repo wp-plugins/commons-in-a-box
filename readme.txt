@@ -1,7 +1,7 @@
 === Commons In A Box ===
 Contributors: cuny-academic-commons, boonebgorges, r-a-y
 Tags: commons, cuny, community, education, academic, buddypress
-Requires at least: 3.4
+Requires at least: 3.5
 Tested up to: 3.5
 Stable tag: 1.0-beta3
 License: GPLv3
@@ -38,6 +38,12 @@ Yes! CBOX will take over the management of BuddyPress and some of your other Bud
 2. The Commons In A Box default theme
 
 == Changelog ==
+
+= 1.0-beta4 =
+* Requires WordPress 3.5
+* Fixed bug when attempting to upgrade WordPress from the admin dashboard
+* Add localization support
+* Updated plugins: BuddyPress 1.6.2, BuddyPress Group Email Subscription 3.3, bbPress 2.2.3
 
 = 1.0-beta3 =
 * Fixes bug when running PHP < 5.3

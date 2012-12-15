@@ -117,7 +117,7 @@ class CBox_Plugins {
 			'plugin_name'       => 'BuddyPress',
 			'cbox_name'         => __( 'BuddyPress', 'cbox' ),
 			'cbox_description'  => __( 'BuddyPress provides the core functionality of Commons In A Box, including groups and user profiles.', 'cbox' ),
-			'version'           => '1.6.1',
+			'version'           => '1.6.2',
 			'documentation_url' => 'http://commonsinabox.org/documentation/plugins/buddypress-plugin',
 			'admin_settings'    => 'options-general.php?page=bp-components',
 			'network_settings'  => 'settings.php?page=bp-components'
@@ -139,9 +139,9 @@ class CBox_Plugins {
 			'type'              => 'recommended',
 			'cbox_name'         => __( 'Docs', 'cbox' ),
 			'cbox_description'  => __( 'Allows your members to collaborate on wiki-style Docs.', 'cbox' ),
-			'version'           => '1.2.6',
+			'version'           => '1.2.7',
 			'depends'           => 'BuddyPress (>=1.5)',
-			'download_url'      => 'http://downloads.wordpress.org/plugin/buddypress-docs.1.2.6.zip',
+			'download_url'      => 'http://downloads.wordpress.org/plugin/buddypress-docs.1.2.7.zip',
 			'documentation_url' => 'http://commonsinabox.org/documentation/plugins/buddypress-docs',
 			'admin_settings'    => 'edit.php?post_type=bp_doc',
 			'network_settings'  => 'root-blog-only'
@@ -167,8 +167,8 @@ class CBox_Plugins {
 			'cbox_name'         => __( 'Group Email Subscription', 'cbox' ),
 			'cbox_description'  => __( 'Allows your community members to receive email notifications of activity within their groups.', 'cbox' ),
 			'depends'           => 'BuddyPress (>=1.5)',
-			'version'           => '3.2.3',
-			'download_url'      => 'http://downloads.wordpress.org/plugin/buddypress-group-email-subscription.3.2.3.zip',
+			'version'           => '3.3',
+			'download_url'      => 'http://downloads.wordpress.org/plugin/buddypress-group-email-subscription.3.3.zip',
 			'documentation_url' => 'http://commonsinabox.org/documentation/plugins/buddypress-group-email-subscription',
 			'admin_settings'    => 'admin.php?page=ass_admin_options', // this doesn't work for BP_ENABLE_MULTIBLOG
 			'network_settings'  => 'admin.php?page=ass_admin_options'
@@ -207,8 +207,8 @@ class CBox_Plugins {
 			'type'              => 'recommended',
 			'cbox_name'         => __( 'bbPress Forums', 'cbox' ),
 			'cbox_description'  => __( 'Sitewide and group-specific discussion forums.', 'cbox' ),
-			'version'           => '2.2.2',
-			'download_url'      => 'http://downloads.wordpress.org/plugin/bbpress.2.2.2.zip',
+			'version'           => '2.2.3',
+			'download_url'      => 'http://downloads.wordpress.org/plugin/bbpress.2.2.3.zip',
 			'documentation_url' => 'http://commonsinabox.org/documentation/plugins/bbpress',
 			'admin_settings'    => 'options-general.php?page=bbpress',
 			'network_settings'  => 'root-blog-only'
@@ -302,8 +302,8 @@ class CBox_Plugins {
 			'cbox_name'         => __( 'External RSS Feeds for Groups', 'cbox' ),
 			'cbox_description'  => __( 'Gives group creators and administrators the ability to attach external RSS feeds to groups.', 'cbox' ),
 			'depends'           => 'BuddyPress (>=1.2)',
-			'version'           => '1.5',
-			'download_url'      => 'http://github.com/modemlooper/external-group-blogs/archive/master.zip',
+			'version'           => '1.5.1',
+			'download_url'      => 'http://github.com/cuny-academic-commons/external-group-blogs/archive/1.5.1.zip',
 			'documentation_url' => 'http://commonsinabox.org/documentation/plugins/buddypress-external-group-rss',
 		) );
 
@@ -365,7 +365,7 @@ class CBox_Plugins {
 		self::register_plugin( array(
 			'plugin_name'  => 'BuddyPress',
 			'type'         => 'dependency',
-			'download_url' => 'http://downloads.wordpress.org/plugin/buddypress.1.6.1.zip'
+			'download_url' => 'http://downloads.wordpress.org/plugin/buddypress.1.6.2.zip'
 		) );
 	}
 
@@ -804,12 +804,12 @@ class CBox_Plugins {
 		else {
 	?>
 			<div class="wrap">
-				<?php screen_icon( 'plugins' ); ?>
+				<?php screen_icon( 'cbox' ); ?>
 
 				<h2><?php _e( 'Commons In A Box Plugins', 'cbox' ); ?></h2>
 
 				<form method="post" action="<?php echo self_admin_url( 'admin.php?page=cbox-plugins' ); ?>">
-					<div class="welcome-panel">
+					<div id="required" class="cbox-plugins-section">
 						<h2><?php _e( 'Required Plugins', 'cbox' ); ?></h2>
 
 						<p><?php _e( 'Commons In A Box requires the following plugins.', 'cbox' ); ?></p>
@@ -817,7 +817,7 @@ class CBox_Plugins {
 						<?php $this->render_plugin_table(); ?>
 					</div>
 
-					<div class="welcome-panel">
+					<div id="recommended" class="cbox-plugins-section">
 						<h2><?php _e( 'Recommended Plugins', 'cbox' ); ?></h2>
 
 						<p><?php _e( "The following plugins are installed automatically during initial Commons In A Box setup.  We like them, but feel free to deactivate them if you don't need certain functionality.", 'cbox' ); ?></p>
@@ -825,7 +825,7 @@ class CBox_Plugins {
 						<?php $this->render_plugin_table( 'type=recommended' ); ?>
 					</div>
 
-					<div class="welcome-panel">
+					<div id="a-la-carte" class="cbox-plugins-section">
 						<h2><?php _e( '&Agrave; la carte', 'cbox' ); ?></h2>
 
 						<p><?php _e( "The following plugins work well with Commons In A Box, but they require a bit of additional setup, so we do not install them by default.", 'cbox' ); ?></p>
@@ -860,7 +860,7 @@ class CBox_Plugins {
 
 		// some HTML markup!
 		echo '<div class="wrap">';
-		screen_icon('plugins');
+		screen_icon( 'cbox' );
 		echo '<h2>' . esc_html__('Update CBOX', 'cbox' ) . '</h2>';
 
 		// start the upgrade!
@@ -877,10 +877,7 @@ class CBox_Plugins {
 	public function inline_css() {
 	?>
 		<style type="text/css">
-			.welcome-panel {border-top:0; margin-top:0; padding:15px 10px 20px;}
-
-			tr.cbox-plugin-row-active th, tr.cbox-plugin-row-active td {background-color:#fff;}
-			tr.cbox-plugin-row-action-required th, tr.cbox-plugin-row-action-required td {background-color:#F4F4F4;}
+			.dep-list li {list-style:disc; margin-left:1.5em;}
 		</style>
 	<?php
 	}
@@ -1020,10 +1017,10 @@ class CBox_Plugins {
 					if ( $r['omit_activated'] && $state == 'deactivate' )
 						continue;
 			?>
-				<tr class="cbox-plugin-row-<?php echo $state == 'deactivate' ? 'active' : 'action-required'; ?>">
+				<tr id="<?php echo sanitize_title( $plugin ); ?>" class="cbox-plugin-row-<?php echo $state == 'deactivate' ? 'active' : 'action-required'; ?>">
 					<th scope='row' class='check-column'>
 						<?php if ( $state != 'deactivate' ) : ?>
-							<input title="<?php esc_attr_e( 'Check this box to install the plugin.', 'cbox' ); ?>" type="checkbox" id="cbox_plugins_<?php echo sanitize_key( $plugin ); ?>" name="cbox_plugins[<?php echo $state; ?>][]" value="<?php echo esc_attr( $plugin ); ?>" <?php checked( $r['check_all'] ); ?>/>
+							<input title="<?php esc_attr_e( 'Check this box to install the plugin.', 'cbox' ); ?>" type="checkbox" id="cbox_plugins_<?php echo sanitize_title( $plugin ); ?>" name="cbox_plugins[<?php echo $state; ?>][]" value="<?php echo esc_attr( $plugin ); ?>" <?php checked( $r['check_all'] ); ?>/>
 						<?php else : ?>
 							<img src="<?php echo admin_url( 'images/yes.png' ); ?>" alt="" title="<?php esc_attr_e( 'Plugin is already active!', 'cbox' ); ?>" style="margin-left:7px;" />
 						<?php endif; ?>
@@ -1031,7 +1028,7 @@ class CBox_Plugins {
 
 					<td class="plugin-title">
 						<?php if ( $state != 'deactivate' ) : ?>
-							<label for="cbox_plugins_<?php echo sanitize_key( $plugin ); ?>">
+							<label for="cbox_plugins_<?php echo sanitize_title( $plugin ); ?>">
 						<?php endif; ?>
 
 						<strong><?php echo $data['cbox_name']; ?></strong>
