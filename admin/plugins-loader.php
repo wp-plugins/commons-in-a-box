@@ -139,9 +139,9 @@ class CBox_Plugins {
 			'type'              => 'recommended',
 			'cbox_name'         => __( 'Docs', 'cbox' ),
 			'cbox_description'  => __( 'Allows your members to collaborate on wiki-style Docs.', 'cbox' ),
-			'version'           => '1.2.7',
+			'version'           => '1.2.8',
 			'depends'           => 'BuddyPress (>=1.5)',
-			'download_url'      => 'http://downloads.wordpress.org/plugin/buddypress-docs.1.2.7.zip',
+			'download_url'      => 'http://downloads.wordpress.org/plugin/buddypress-docs.1.2.8.zip',
 			'documentation_url' => 'http://commonsinabox.org/documentation/plugins/buddypress-docs',
 			'admin_settings'    => 'edit.php?post_type=bp_doc',
 			'network_settings'  => 'root-blog-only'
@@ -167,8 +167,8 @@ class CBox_Plugins {
 			'cbox_name'         => __( 'Group Email Subscription', 'cbox' ),
 			'cbox_description'  => __( 'Allows your community members to receive email notifications of activity within their groups.', 'cbox' ),
 			'depends'           => 'BuddyPress (>=1.5)',
-			'version'           => '3.3',
-			'download_url'      => 'http://downloads.wordpress.org/plugin/buddypress-group-email-subscription.3.3.zip',
+			'version'           => '3.3.1',
+			'download_url'      => 'http://downloads.wordpress.org/plugin/buddypress-group-email-subscription.3.3.1.zip',
 			'documentation_url' => 'http://commonsinabox.org/documentation/plugins/buddypress-group-email-subscription',
 			'admin_settings'    => 'admin.php?page=ass_admin_options', // this doesn't work for BP_ENABLE_MULTIBLOG
 			'network_settings'  => 'admin.php?page=ass_admin_options'

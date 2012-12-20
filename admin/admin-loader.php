@@ -550,9 +550,7 @@ class CBox_Admin {
 				<a class="welcome-panel-close" href="<?php echo esc_url( network_admin_url( 'admin.php?page=cbox&welcome=0' ) ); ?>"><?php _e( 'Dismiss', 'cbox' ); ?></a>
 			<?php endif; ?>
 
-			<?php if ( version_compare( $wp_version, '3.4.3' ) < 0 ) : ?>
-				<div class="wp-badge"><?php printf( __( 'Version %s', 'cbox' ), cbox_get_version() ); ?></div>
-			<?php endif; ?>
+			<div class="wp-badge"><?php printf( __( 'Version %s', 'cbox' ), cbox_get_version() ); ?></div>
 
 			<div class="welcome-panel-content">
 				<h3><?php _e( 'Welcome to Commons In A Box! ', 'cbox' ); ?></h3>
@@ -844,7 +842,7 @@ class CBox_Admin {
 						else:
 
 							// current theme is not the CBOX default theme
-							if ( $theme->get_stylesheet() != 'cbox-theme' ) {
+							if ( $theme->get_template() != 'cbox-theme' ) {
 								$is_bp_compatible = cbox_is_theme_bp_compatible();
 
 							?>
@@ -890,7 +888,12 @@ class CBox_Admin {
 								// check for upgrades
 								//$is_upgrade = CBox_Theme_Specs::get_upgrades( $theme );
 							?>
-								<p><?php _e( "You're using the <strong>CBOX Default</strong> theme! Good on ya!", 'cbox' ); ?></p>
+
+								<?php if ( $theme->get_stylesheet() != 'cbox-theme' ) : ?>
+									<p><?php _e( "You're using a child theme of the <strong>CBOX Default</strong> theme! Good on ya!", 'cbox' ); ?></p>
+								<?php else : ?>
+									<p><?php _e( "You're using the <strong>CBOX Default</strong> theme! Good on ya!", 'cbox' ); ?></p>
+								<?php endif; ?>
 
 								<?php /* HIDE THIS FOR NOW ?>
 								<?php if ( $is_upgrade ) : ?>
@@ -1272,7 +1275,7 @@ class CBox_Admin {
 			background: url( '<?php echo $icon32_url; ?>' ) no-repeat;
 		}
 
-		#welcome-panel {overflow:visible;}
+		#welcome-panel {overflow:visible;min-height: 240px;}
 
 		.about-text {margin-right:220px;}
 		.welcome-panel-content .about-description, .welcome-panel h3 {margin-left:0; margin-right:180px; margin-bottom:.5em;}
