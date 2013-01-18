@@ -1,9 +1,8 @@
 <?php
 /**
- * BuddyPress Group Email Subscription Mods
+ * BuddyPress Group Email Subscription (GES) Mods
  *
- * If GES settings are toggled under the CBOX admin settings page,
- * setup the code for each setting here.
+ * The following are modifications that CBOX does to GES.
  *
  * @since 1.0-beta2
  *
@@ -19,7 +18,9 @@ cbox()->plugins->ges = new stdClass;
 cbox()->plugins->ges->is_setup = function_exists( 'ass_loader' );
 
 /**
- * Changes the default group subscription to "All Mail" from "No Email"
+ * Changes the default group subscription to "All Mail" from "No Email".
+ *
+ * This class is autoloaded.
  *
  * @since 1.0-beta2
  */
@@ -49,6 +50,8 @@ class CBox_GES_All_Mail {
 /**
  * When activity is created by bbPress 2.x, swap out the BP activity content
  * with the reply/topic full text
+ *
+ * This class is loaded if enabled from the CBOX Settings page.
  *
  * @since 1.0-beta4
  */
